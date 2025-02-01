@@ -2,7 +2,7 @@
 
 $cnn = new mysqli("localhost", "root", "", "shop_project");
 // count tada
-$tbl = array("tbl_slide","tbl_category","users");
+$tbl = array("tbl_slide","tbl_category","users",'tbl_customer','tbl_subcategory');
 $opt = $_POST['opt'];
 $sql = "SELECT COUNT(*) as total FROM $tbl[$opt] ";
 $result = $cnn->query($sql);

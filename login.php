@@ -6,6 +6,7 @@
     <title>Login</title>
     <link rel="icon" href="Admin/img/icon.jpg" type="image/jpg">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -160,18 +161,37 @@
                     console.log("Sending login request...");
                 },
                 success: function(response) {
-                    alert(response);
+                    // alert(response);
                     if (response === "Login successful") {
-                        window.location.href = "http://localhost/Project_shop/Admin/Admin.php";
+                        // Display SweetAlert on a successful login
+                        swal({
+                            // title: "Good job!",
+                            text: "Login Successful!",
+                            icon: "success",
+                            button: "OK",
+                            // Set height of the popup
+                        }).then(() => {
+                            // Redirect to Admin page after the user clicks OK
+                            window.location.href = "http://localhost/Project_shop/Admin/Admin.php";
+                        });
                     } else {
-                        alert("Login failed");
+                        // Alert for a failed login
+                        swal({
+                            // title: "Oops!",
+                            text: "Login failed. Please try again.",
+                            icon: "error",
+                            button: "OK",
+                             // Set height of the popup
+                        });
                     }
+
                 },
                 error: function() {
                     alert("There was an error with the request.");
                 }
             });
         });
+        
     });
 </script>
 

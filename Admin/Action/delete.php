@@ -5,7 +5,7 @@ $cnn = new mysqli("localhost", "root", "", "shop_project");
 if ($cnn->connect_error) {
     die(json_encode(['delete' => false, 'error' => $cnn->connect_error]));
 }
-$tbl = array("tbl_slide","tbl_category");
+$tbl = array("tbl_slide","tbl_category","users");
 $opt = $_POST['opt'];
 
 // Retrieve the ID from the POST request

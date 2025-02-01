@@ -18,7 +18,7 @@ if (!isset($_SESSION['username'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        @charset "utf-8";
+        ;
 
         /* CSS Document */
         body {
@@ -362,6 +362,10 @@ if (!isset($_SESSION['username'])) {
             border: 1px solid #ccc;
         }
 
+        .data table tr td span {
+            display: none;
+        }
+
         .data table tr td img {
             width: 50px;
             height: 50px;
@@ -589,8 +593,8 @@ if (!isset($_SESSION['username'])) {
                 <a><i class="fas fa-plus" style="margin-right: 4px;"></i>system</a>
                 <div class="sub-menu">
                     <ul>
-                        <li data-opt="2">users</li>
-                        <li data-opt="3">Change Password</li>
+                        <li data-opt="2">Employees</li>
+                        <li data-opt="3">Customer</li>
                         <li>permission</li>
             </li>
         </ul>
@@ -601,9 +605,9 @@ if (!isset($_SESSION['username'])) {
         <div class="sub-menu">
             <ul>
                 <li data-opt="0">Slide</li>
-                <li data-opt="1">category</li>
-                <li>Sub category</li>
-                <li>product</li>
+                <li data-opt="1">Gategory</li>
+                <li data-opt="4">Sub cotegory</li>
+                <li data-opt="5">product</li>
             </ul>
         </div>
     </li>
@@ -679,7 +683,7 @@ if (!isset($_SESSION['username'])) {
         var popup = '<div class="popup"></div>';
         var cnt = $('.cnt');
         var menu = $('.menu');
-        var frm = Array('frm.slide.php', 'frm.category.php', 'Addusers.php', 'frm-change-passwords.php'); // Ensure the forms exist on the server
+        var frm = Array('frm.slide.php', 'frm.category.php', 'Addusers.php', 'frm-change-passwords.php', 'subcategory.php','frm-product.php'); // Ensure the forms exist on the server
         var frmInd;
         var optmenu = 0;
         var tbldata = $('#tbl-data');
@@ -692,62 +696,64 @@ if (!isset($_SESSION['username'])) {
         var curpage = $('#cur-page');
         var Search = $('#txt-serch-val');
 
-        $('#txt-serch-val').on('input',function() {
-        var  searchValue = Search.val(); // Get the search value
+        $('#txt-serch-val').on('input', function() {
+            var searchValue = Search.val(); // Get the search value
 
-    $.ajax({
-        type: "POST",
-        url: "Action/Search.php",
-        data: { Search: searchValue }, 
-        dataType: "json", 
-        success: function(response) {
-           
-            tbldata.empty(); // Clear previous results
+            $.ajax({
+                type: "POST",
+                url: "Action/Search.php",
+                data: {
+                    Search: searchValue
+                },
+                dataType: "json",
+                success: function(response) {
 
-            if (response.length > 0) {
-                // Append table headers
-                tbldata.append(
-                    '<tr>' +
-                    '<th width="50px">ID</th>' +
-                    '<th>Slide Name</th>' +
-                    '<th width="50px">OD</th>' +
-                    '<th width="50px">Photo</th>' +
-                    '<th width="50px">Status</th>' +
-                    '<th width="75px">Action</th>' +
-                    '</tr>'
-                );
+                    tbldata.empty(); // Clear previous results
 
-                // Append table rows dynamically
-                response.forEach(item => {
-                    tbldata.append(
-                        '<tr>' +
-                        '<td>' + item.Id + '</td>' +
-                        '<td>' + item.Name + '</td>' +
-                        '<td>' + item.od + '</td>' +
-                        '<td><img src="img/' + item.photo + '" alt="Photo" width="50"></td>' +
-                      
-                        '<td>' + item.Status + '</td>' +
-                        '<td>' +
-                        btnedit +
-                        btndelete +
-                        '</td>' +
-                        '</tr>'
-                       
-                    );
-                   
-                });
-                // Editdata(eThis)
-               
-            } else {
-                tbldata.append('<tr><td colspan="6">No results found</td></tr>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            tbldata.append('<tr><td colspan="6">An error occurred while fetching data</td></tr>');
-        }
-    });
-});
+                    if (response.length > 0) {
+                        // Append table headers
+                        tbldata.append(
+                            '<tr>' +
+                            '<th width="50px">ID</th>' +
+                            '<th>Slide Name</th>' +
+                            '<th width="50px">OD</th>' +
+                            '<th width="50px">Photo</th>' +
+                            '<th width="50px">Status</th>' +
+                            '<th width="75px">Action</th>' +
+                            '</tr>'
+                        );
+
+                        // Append table rows dynamically
+                        response.forEach(item => {
+                            tbldata.append(
+                                '<tr>' +
+                                '<td>' + item.Id + '</td>' +
+                                '<td>' + item.Name + '</td>' +
+                                '<td>' + item.od + '</td>' +
+                                '<td><img src="img/' + item.photo + '" alt="Photo" width="50"></td>' +
+
+                                '<td>' + item.Status + '</td>' +
+                                '<td>' +
+                                btnedit +
+                                btndelete +
+                                '</td>' +
+                                '</tr>'
+
+                            );
+
+                        });
+                        // Editdata(eThis)
+
+                    } else {
+                        tbldata.append('<tr><td colspan="6">No results found</td></tr>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    tbldata.append('<tr><td colspan="6">An error occurred while fetching data</td></tr>');
+                }
+            });
+        });
 
 
 
@@ -789,7 +795,11 @@ if (!isset($_SESSION['username'])) {
                 GetCategorieData()
             } else if (frmInd === 2) {
                 getusers();
-            }
+            } else if (frmInd === 3) {
+                changepassword();
+            } else if (frmInd === 4) {
+                getsubcategory()
+            };
             totalpages.text(Math.ceil(Datatotal.text() / e.val()));
         });
         // Handle "Next" button click
@@ -805,7 +815,9 @@ if (!isset($_SESSION['username'])) {
                 GetCategorieData()
             } else if (frmInd === 2) {
                 getusers();
-            }
+            } else if (frmInd === 3) {
+                changepassword();
+            };
         });
 
         // Handle "Back" button click
@@ -847,6 +859,8 @@ if (!isset($_SESSION['username'])) {
                 getusers()
             } else if (frmInd == 3) {
                 changepassword()
+            } else if (frmInd == 4) {
+                getsubcategory()
             }
             Countdata();
         });
@@ -898,8 +912,16 @@ if (!isset($_SESSION['username'])) {
                         Editdata(eThis);
                     } else if (frmInd === 1) {
                         editcategorie(eThis);
+                    } else if (frmInd === 2) {
+                        editemployee(eThis);
+                        $('#txt-pass').hide();
+                        $('#txt-pass').hide();
                     } else if (frmInd === 3) {
                         editchangepassword(eThis);
+                        $('#txt-pass').hide();
+                        $('#txt-pass').hide();
+                    } else if (frmInd === 4) {
+                        edit_sub_category(eThis);
                     }
                     // Pass the button reference to Editdata
                 } else if (statusTxt === "error") {
@@ -907,41 +929,47 @@ if (!isset($_SESSION['username'])) {
                 }
             });
         });
+
+        function editemployee(eThis) {
+            var parent = eThis.parents('tr'); // Get the parent row of the button
+            var id = parent.find('td:eq(0)').text();
+            var photo = parent.find('td:eq(1) img').attr('alt');
+            var name = parent.find('td:eq(2)').text();
+            // var od = parent.find('td:eq(3)').text();
+            var phonenumber = parent.find('td:eq(3)').text();
+            var email = parent.find('td:eq(4)').text();
+            var position = parent.find('td:eq(5)').text();
+            // alert(name)
+            //  var img = body.find('#txt-img').val();
+            // alert(photo );
+
+            // // Update the form fields with the extracted data
+            body.find('.frm #txt-edit').val(id);
+            body.find('.frm #txt-ID').val(id);
+            body.find('.frm #txt-fullname').val(name);
+            body.find('.frm #txt-ph').val(phonenumber);
+            body.find('.frm #txt-email').val(email);
+            body.find('.frm #txt-img').val(photo);
+            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+            body.find('.frm #txt-select').val(position);
+        }
         //editchangepassword;
         function editchangepassword(eThis) {
             var parent = eThis.parents('tr'); // Get the parent row of the button
             var id = parent.find('td:eq(0)').text();
-            // alert(id);
-            var email = parent.find('td:eq(1)').text();
-            var password = parent.find('td:eq(2)').text();
-
-            // Update the form fields with the extracted data
-            body.find('.frm #txt-edit-ID').val(id);
-            body.find('.frm #txt-ID').val(id);
-            body.find('.frm #txt-Email').val(email);
-            body.find('.frm #txt-passwords').val(password);
-
-        }
-
-        function Editdata(eThis) {
-            var parent = eThis.parents('tr'); // Get the parent row of the button
-            var id = parent.find('td:eq(0)').text();
-            var name = parent.find('td:eq(1)').text();
-            var od = parent.find('td:eq(2)').text();
-            var photo = parent.find('td:eq(3) img').attr('alt');
-            var status = parent.find('td:eq(4)').text();
-            // var img = body.find('#txt-img').val();
-            // alert(photo );
-
+            var username = parent.find('td:eq(1)').text();
+            var phone = parent.find('td:eq(2)').text();
+            var email = parent.find('td:eq(3)').text();
+            var Address = parent.find('td:eq(4)').text();
+            // alert(Address)
             // Update the form fields with the extracted data
             body.find('.frm #txt-edit').val(id);
             body.find('.frm #txt-ID').val(id);
-            body.find('.frm #txt-Name').val(name);
-            body.find('.frm #txt-od').val(od);
-            body.find('.frm #txt-img').val(photo);
-            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+            body.find('.frm #txt-fullname').val(username);
+            body.find('.frm #txt-ph').val(phone);
+            body.find('.frm #txt-txt-email').val(email);
+            body.find('.frm #txt-select').val(Address);
 
-            body.find('.frm #txt-select').val(status);
         }
 
         // Delete button
@@ -990,45 +1018,152 @@ if (!isset($_SESSION['username'])) {
             } else if (frmInd == 1) {
                 saveCategories(eThis);
                 $('.popup').remove();
+            } else if (frmInd == 2) {
+                saveEmployees(eThis)
+                $('.popup').remove();
             } else if (frmInd == 3) {
-                savechangepassword(eThis);
+                saveCustomer(eThis);
+                $('.popup').remove();
+            } else if (frmInd == 4) {
+                save_sub_category(eThis)
                 $('.popup').remove();
             }
         });
 
-        function savechangepassword(eThis) {
+        function save_sub_category(eThis) {
+            //var  eThis = $(this);
+            var parent = eThis.parents('.frm');
+            var sub_id = parent.find('#txt-cate');
+            var sub_name = parent.find('#txt-cate option:selected').text();
+            var name = parent.find('#txt-Name');
+            var id = parent.find('#txt-Id');
+            var od = parent.find('#txt-od');
+            var photo = parent.find('#txt-img');
+            var status = parent.find('#txt-select');
             var frm = eThis.closest('form.upl');
             var form_data = new FormData(frm[0]);
+            if (name == '') {
+                alert('Please enter a name');
+                name.focus();
+                return;
+            } else if (sub_id.val() == '0') {
+                alert('Please select a category');
+                sub_id.focus();
+                return;
+            };
             $.ajax({
                 type: "POST",
-                url: "Action/savechange.php",
+                url: "Action/save_subcategory.php",
                 data: form_data,
                 processData: false,
                 cache: false,
                 contentType: false,
-                //dataType: "json",
+                dataType: "json",
                 beform: function(response) {
                     // eThis.html(wait);
 
                 },
                 success: function(response) {
-
+                    // alert(response.dpl);
+                    if (response.dpl == true) {
+                        alert('Duplicate Name');
+                    }
+                    Countdata();
+                    getsubcategory();
+                    var tr = '<tr>' +
+                        '<td>' + response.id + '</td>' +
+                        '<td> <span>' + sub_id.val() + '</span>' + sub_name + '</td>' +
+                        '<td>' + name.val() + '</td>' +
+                        '<td>' + od.val() + '</td>' +
+                        '<td><img src="img/' + photo.val() + '" ></td>' +
+                        '<td>' + status.val() + '</td>' +
+                        '<td>>' + btnedit + btndelete + '</td>' +
+                        '</tr>';
+                    // alert(response.dpl);
+                    tbldata.append(tr);
+                    // $('.popup').remove();
                     // GetSlideData();
-                    // var tr = '<tr>' +
-                    //     '<td>' + response.id + '</td>' +
-                    //     '<td>' + name.val() + '</td>' +
-                    //     '<td>' + od.val() + '</td>' +
-                    //     '<td><img src="img/' + photo.val() + '" ></td>' +
-                    //     '<td>' + status.val() + '</td>' +
-                    //     '<td>>' + btnedit + btndelete + '</td>' +
-                    //     '</tr>';
-                    // // alert(response.dpl);
-                    // tbldata.append(tr);
-                    // // $('.popup').remove();
-                    // // GetSlideData();
                 }
             });
-        };
+
+        }
+
+        function edit_sub_category(eThis) {
+            var parent = eThis.parents('tr'); // Get the parent row of the button
+            var id = parent.find('td:eq(0)').text();
+            var cat = parent.find('td:eq(1) span').text()
+            // alert(cat)
+            var name = parent.find('td:eq(2)').text();
+            var od = parent.find('td:eq(3)').text();
+            var photo = parent.find('td:eq(4) img').attr('alt');
+            var status = parent.find('td:eq(5)').text();
+            // var img = body.find('#txt-img').val();
+            // alert(photo );
+
+            // Update the form fields with the extracted data
+            body.find('.frm #txt-edit').val(id);
+            body.find('.frm #txt-ID').val(id);
+            body.find('.frm #txt-cate').val(cat);
+            body.find('.frm #txt-Name').val(name);
+            body.find('.frm #txt-od').val(od);
+            body.find('.frm #txt-img').val(photo);
+            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+
+            body.find('.frm #txt-select').val(status);
+        }
+
+        function getsubcategory() {
+            var tr = '<tr>' +
+                '<th width="50px">ID</th>' +
+                '<th width="75px">Category</th>' +
+                '<th>Sub Category Name</th>' +
+                '<th width="50px">OD</th>' +
+                '<th width="50px">Photo</th>' +
+                '<th width="50px">Status</th>' +
+                '<th width="75px">Action</th>' +
+                '</tr>';
+
+            $.ajax({
+                type: "POST",
+                url: "Get/get_sub_categorydata.php",
+                data: {
+                    opt: e.val(),
+                    s: s
+                },
+                cache: false,
+                dataType: "json",
+                beforeSend: function() {
+                    // You can add a loading spinner or any other pre-request logic here
+                },
+                success: function(response) {
+                    if (response.length > 0) {
+                        var row = '';
+                        for (i = 0; i < response.length; i++) {
+                            row += '<tr>' +
+                                '<td>' + response[i].id + '</td>' +
+                                '<td>' + '<span>' + response[i].cate_id + '</span>' + response[i].cate_name + '</td>' +
+                                '<td>' + response[i].name + '</td>' +
+                                '<td>' + response[i].od + '</td>' +
+                                '<td><img src="img/' + response[i].photo + '" alt="' + response[i].photo + '"></td>' +
+                                '<td>' + response[i].status + '</td>' +
+                                '<td>' + btnedit + btndelete + '</td>' +
+                                '</tr>';
+                        }
+                        tbldata.html(tr + row);
+                        // alert("Data loaded successfully!");
+                    } else {
+                        alert("No data found!");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred while loading data: " + error);
+                }
+            });
+        }
+
+
+
+
 
         function saveSlider(eThis) {
             //var  eThis = $(this);
@@ -1062,7 +1197,7 @@ if (!isset($_SESSION['username'])) {
                     if (response.dpl == true) {
                         alert('Duplicate Name');
                     }
-
+                    Countdata();
                     GetSlideData();
                     var tr = '<tr>' +
                         '<td>' + response.id + '</td>' +
@@ -1080,6 +1215,119 @@ if (!isset($_SESSION['username'])) {
             });
 
         }
+        // get sldie data
+        function GetSlideData() {
+
+            var tr = '<tr>' +
+                '<th width="50px">ID</th>' +
+                '<th>Slide Name</th>' +
+                '<th width="50px">OD</th>' +
+                '<th width="50px">Photo</th>' +
+                '<th width="50px">Status</th>' +
+                '<th width="75px">Action</th>'
+            '</tr>';
+
+            $.ajax({
+                type: "POST",
+                url: "Get/Get_Slide_data.php",
+                data: {
+                    opt: e.val(),
+                    s: s
+                },
+                // processData: false,
+                cache: false,
+                // contentType: false,
+                dataType: "json",
+                beform: function(response) {
+
+                },
+                success: function(response) {
+                    // alert(response.name);
+                    var row = '';
+                    for (i = 0; i < response.length; i++) {
+                        row += '<tr>' +
+                            '<td>' + response[i].id + '</td>' +
+                            '<td>' + response[i].name + '</td>' +
+                            '<td>' + response[i].od + '</td>' +
+                            '<td><img src="img/' + response[i].photo + '" alt="' + response[i].photo + '"></td>' +
+                            '<td>' + response[i].status + '</td>' +
+                            '<td>' + btnedit + btndelete + '</td>' +
+                            // '<td>'++'</td>'+
+                            '</tr>';
+                        // tbldata.append(row);
+                    }
+                    tbldata.html(tr + row);
+                    // s = s + parseInt(e.val());
+                }
+            });
+        }
+        function Editdata(eThis) {
+            var parent = eThis.parents('tr'); // Get the parent row of the button
+            var id = parent.find('td:eq(0)').text();
+            var name = parent.find('td:eq(1)').text();
+            var od = parent.find('td:eq(2)').text();
+            var photo = parent.find('td:eq(3) img').attr('alt');
+            var status = parent.find('td:eq(4)').text();
+            // var img = body.find('#txt-img').val();
+            // alert(photo );
+
+            // Update the form fields with the extracted data
+            body.find('.frm #txt-edit').val(id);
+            body.find('.frm #txt-ID').val(id);
+            body.find('.frm #txt-Name').val(name);
+            body.find('.frm #txt-od').val(od);
+            body.find('.frm #txt-img').val(photo);
+            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+
+            body.find('.frm #txt-select').val(status);
+        }
+
+        // save Employess data
+        function saveEmployees(eThis) {
+            var frm = eThis.closest('form.upl');
+            var form_data = new FormData(frm[0]);
+
+            if (!form_data.get("txt-fullname")) {
+                alert("Please enter a full name.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost/Project_shop/Admin/Action/saveem.php",
+                data: form_data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    getusers();
+                    Countdata();
+                    row += '<tr>' +
+                        '<td><img src="img/' + response[i].photo + '" alt="' + response[i].photo + '"></td>' +
+                        '<td>' + response[i].usersname + '</td>' +
+                        '<td>' + response[i].phone + '</td>' +
+                        '<td>' + response[i].email + '</td>' +
+                        '<td>' + response[i].status + '</td>' +
+                        '<td>' + response[i].create_date + '</td>' + // Adjust to match PHP response
+                        '<td>' + btnedit + btndelete + '</td>' +
+                        '</tr>';
+                    // alert(response);
+                    tbldata.append(row);
+                    // Reset the form input fields
+                    // name.val('');
+                    // od.val('');
+                    // photo.val('');
+                    // status.val('');
+                    // $('.popup').remove();
+                    // GetSlideData();
+                    // location.reload();
+                    // $('.popup').remove();
+                    // GetSlideData();
+                    location.reload();
+                }
+            });
+        }
+
+
 
         function saveCategories(eThis) {
             //var  eThis = $(this);
@@ -1129,29 +1377,6 @@ if (!isset($_SESSION['username'])) {
                 }
             });
         }
-        // get Auto Id 
-        function getautoid() {
-
-            $.ajax({
-                type: "POST",
-                url: "Action/Get_Auto_id.php",
-                data: {
-                    opt: frmInd
-                },
-                //processData: false,
-                cache: false,
-                //contentType:false,
-
-                dataType: "json",
-                beform: function(response) {
-
-                },
-                success: function(response) {
-                    var id = $('#txt-ID').val(response.id);
-                }
-            });
-        }
-        // get category data
         function GetCategorieData() {
             var tr = '<tr>' +
                 '<th width="50px">ID</th>' +
@@ -1169,9 +1394,8 @@ if (!isset($_SESSION['username'])) {
                     opt: e.val(),
                     s: s
                 },
-                // processData: false,
+
                 cache: false,
-                // contentType: false,
                 dataType: "json",
                 beform: function(response) {
 
@@ -1218,103 +1442,46 @@ if (!isset($_SESSION['username'])) {
             body.find('.frm #txt-select').val(status);
         }
 
+
+        // get Auto Id 
+        function getautoid() {
+
+            $.ajax({
+                type: "POST",
+                url: "Action/Get_Auto_id.php",
+                data: {
+                    opt: frmInd
+                },
+                //processData: false,
+                cache: false,
+                //contentType:false,
+
+                dataType: "json",
+                beform: function(response) {
+
+                },
+                success: function(response) {
+                    var id = $('#txt-ID').val(response.id);
+                }
+            });
+        }
+        // get category data
+
+
         function getusers() {
             var tr = '<tr>' +
-                '<th>ID</th>' +
-                '<th>Usersname</th>' +
+                '<th >NO</th>' +
+                '<th width="50px" >Photo</th>' +
+                '<th>usersname</th>' +
+                '<th>Phone Number</th>' +
                 '<th>Email</th>' +
-                '<th>Status</th>' +
-                '</tr>';
+                '<th>Position</th>' +
+                '<th>Create_Date</th>' +
+                '<th>Action</th>'
+            '</tr>';
             $.ajax({
                 type: "POST",
                 url: "Get/get-users-data.php",
-                data: {
-                    opt: e.val(),
-                    s: s
-                },
-                processData: false,
-                cache: false,
-                contentType: false,
-                dataType: "json",
-                beform: function(response) {
-
-                },
-                success: function(response) {
-                    // alert(response.name);
-                    var row = '';
-                    for (i = 0; i < response.length; i++) {
-                        row += '<tr>' +
-                            '<td>' + response[i].id + '</td>' +
-                            '<td>' + response[i].usersname + '</td>' +
-                            '<td>' + response[i].email + '</td>' +
-                            '<td>' + response[i].status + '</td>' +
-                            // '<td>'++'</td>'+
-                            '</tr>';
-                        // tbldata.append(row);
-                    }
-                    tbldata.html(tr + row);
-                }
-            });
-
-            tbldata.html(tr);
-        }
-        // change  password
-        function changepassword() {
-
-            var tr = '<tr>' +
-                '<th>ID</th>' +
-                '<th>Email</th>' +
-                '<th>Passwords</th>' +
-                '<th>Status</th>' +
-                '<th>Action</th>' +
-                '</tr>';
-            $.ajax({
-                type: "POST",
-                url: "Get/users-changepasswords.php",
-                data: {
-                    opt: e.val(),
-                    s: s
-                },
-                processData: false,
-                cache: false,
-                contentType: false,
-                dataType: "json",
-                beform: function(response) {
-
-                },
-                success: function(response) {
-                    // alert(response.name);
-                    var row = '';
-                    for (i = 0; i < response.length; i++) {
-                        row += '<tr>' +
-                            '<td>' + response[i].id + '</td>' +
-                            '<td>' + response[i].email + '</td>' +
-                            '<td>' + response[i].passwords + '</td>' +
-                            '<td>' + response[i].status + '</td>' +
-                            '<td>' + btnedit + btndelete + '</td>' +
-                            // '<td>'++'</td>'+
-                            '</tr>';
-                        // tbldata.append(row);
-                    }
-                    tbldata.html(tr + row);
-                }
-            });
-        }
-        // get sldie data
-        function GetSlideData() {
-
-            var tr = '<tr>' +
-                '<th width="50px">ID</th>' +
-                '<th>Slide Name</th>' +
-                '<th width="50px">OD</th>' +
-                '<th width="50px">Photo</th>' +
-                '<th width="50px">Status</th>' +
-                '<th width="75px">Action</th>'
-            '</tr>';
-
-            $.ajax({
-                type: "POST",
-                url: "Get/Get_Slide_data.php",
                 data: {
                     opt: e.val(),
                     s: s
@@ -1331,21 +1498,109 @@ if (!isset($_SESSION['username'])) {
                     var row = '';
                     for (i = 0; i < response.length; i++) {
                         row += '<tr>' +
-                            '<td>' + response[i].id + '</td>' +
-                            '<td>' + response[i].name + '</td>' +
-                            '<td>' + response[i].od + '</td>' +
+                            '<td>' + response[i].Id + '</td>' +
                             '<td><img src="img/' + response[i].photo + '" alt="' + response[i].photo + '"></td>' +
+                            '<td>' + response[i].usersname + '</td>' +
+                            '<td>' + response[i].phone + '</td>' +
+                            '<td>' + response[i].email + '</td>' +
                             '<td>' + response[i].status + '</td>' +
+                            '<td>' + response[i].create_date + '</td>' + // Adjust to match PHP response
+                            '<td>' + btnedit + btndelete + '</td>' +
+                            '</tr>';
+                        // tbldata.append(row);
+                    }
+                    tbldata.html(tr + row);
+                }
+            });
+
+            tbldata.html(tr);
+        }
+        function saveCustomer(eThis) {
+            var frm = eThis.closest('form.upl');
+            var form_data = new FormData(frm[0]);
+            $.ajax({
+                type: "POST",
+                url: "Action/savechange.php",
+                data: form_data,
+                processData: false,
+                cache: false,
+                contentType: false,
+                // dataType: "json",
+                beform: function(response) {
+                    // eThis.html(wait);
+
+                },
+                success: function(response) {
+                    Countdata();
+                    changepassword();
+                    row += '<tr>' +
+                        '<td>' + response[i].id + '</td>' +
+                        '<td>' + response[i].usersname + '</td>' +
+                        '<td>' + response[i].phone + '</td>' +
+                        '<td>' + response[i].email + '</td>' +
+                        '<td>' + response[i].Address + '</td>' +
+                        '<td>' + response[i].Create_at + '</td>' +
+                        '<td>' + btnedit + btndelete + '</td>' +
+                        // '<td>'++'</td>'+
+                        '</tr>';
+                    // // alert(response.dpl);
+                    tbldata.append(row);
+                    //  $('.popup').remove();
+                    // // GetSlideData();
+                }
+            });
+        }
+        // change  password
+        function changepassword() {
+
+            var tr = '<tr>' +
+                '<th>ID</th>' +
+                '<th>username</th>' +
+                '<th>Phone</th>' +
+                '<th>Email</th>' +
+                '<th>Address</th>' +
+                '<th>Create-Date</th>' +
+                // '<th>Update-Date</th>' +
+                '<th>Action</th>' +
+                '</tr>';
+            $.ajax({
+                type: "POST",
+                url: "Get/users-changepasswords.php",
+                data: {
+                    opt: e.val(),
+                    s: s
+                },
+                // processData: false,
+
+                // contentType: false,
+                // processData: false,
+                cache: false,
+                // contentType: false,
+                dataType: "json",
+                beform: function(response) {
+
+                },
+                success: function(response) {
+                    // alert(response.name);
+                    var row = '';
+                    for (i = 0; i < response.length; i++) {
+                        row += '<tr>' +
+                            '<td>' + response[i].id + '</td>' +
+                            '<td>' + response[i].usersname + '</td>' +
+                            '<td>' + response[i].phone + '</td>' +
+                            '<td>' + response[i].email + '</td>' +
+                            '<td>' + response[i].Address + '</td>' +
+                            '<td>' + response[i].Create_at + '</td>' +
                             '<td>' + btnedit + btndelete + '</td>' +
                             // '<td>'++'</td>'+
                             '</tr>';
                         // tbldata.append(row);
                     }
                     tbldata.html(tr + row);
-                    // s = s + parseInt(e.val());
                 }
             });
         }
+
         $('body').on('change', '.frm #txt-photo', function() {
             var eThis = $(this);
             var parent = eThis.parents('.frm');
