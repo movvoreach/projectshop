@@ -683,7 +683,7 @@ if (!isset($_SESSION['username'])) {
         var popup = '<div class="popup"></div>';
         var cnt = $('.cnt');
         var menu = $('.menu');
-        var frm = Array('frm.slide.php', 'frm.category.php', 'Addusers.php', 'frm-change-passwords.php', 'subcategory.php','frm-product.php'); // Ensure the forms exist on the server
+        var frm = Array('frm.slide.php', 'frm.category.php', 'Addusers.php', 'frm-change-passwords.php', 'subcategory.php', 'frm-product.php'); // Ensure the forms exist on the server
         var frmInd;
         var optmenu = 0;
         var tbldata = $('#tbl-data');
@@ -799,7 +799,9 @@ if (!isset($_SESSION['username'])) {
                 changepassword();
             } else if (frmInd === 4) {
                 getsubcategory()
-            };
+            } else if (frmInd === 5) {
+                getProduct()
+            }
             totalpages.text(Math.ceil(Datatotal.text() / e.val()));
         });
         // Handle "Next" button click
@@ -861,6 +863,8 @@ if (!isset($_SESSION['username'])) {
                 changepassword()
             } else if (frmInd == 4) {
                 getsubcategory()
+            } else if (frmInd == 5) {
+                getProduct()
             }
             Countdata();
         });
@@ -1027,6 +1031,9 @@ if (!isset($_SESSION['username'])) {
             } else if (frmInd == 4) {
                 save_sub_category(eThis)
                 $('.popup').remove();
+            } else if (frmInd == 5) {
+                save_Product(eThis);
+                $('.popup').remove();
             }
         });
 
@@ -1036,7 +1043,7 @@ if (!isset($_SESSION['username'])) {
             var sub_id = parent.find('#txt-cate');
             var sub_name = parent.find('#txt-cate option:selected').text();
             var name = parent.find('#txt-Name');
-            var id = parent.find('#txt-Id');
+            var id = parent.find('#txt-ID');
             var od = parent.find('#txt-od');
             var photo = parent.find('#txt-img');
             var status = parent.find('#txt-select');
@@ -1116,7 +1123,7 @@ if (!isset($_SESSION['username'])) {
             var tr = '<tr>' +
                 '<th width="50px">ID</th>' +
                 '<th width="75px">Category</th>' +
-                '<th>Sub Category Name</th>' +
+                '<th>Brand</th>' +
                 '<th width="50px">OD</th>' +
                 '<th width="50px">Photo</th>' +
                 '<th width="50px">Status</th>' +
@@ -1153,6 +1160,158 @@ if (!isset($_SESSION['username'])) {
                         // alert("Data loaded successfully!");
                     } else {
                         alert("No data found!");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred while loading data: " + error);
+                }
+            });
+        }
+
+
+        function save_Product(eThis) {
+            var parent = eThis.parents('.frm');
+            var sub_id = parent.find('#txt-cate');
+            var sub_name = parent.find('#txt-cate option:selected').text();
+            var name = parent.find('#txt-Name');
+            var slide = parent.find('#txt-slide');
+            var sub_cate = parent.find('#txt-sub');
+            var price = parent.find('#txt-price');
+            var discount = parent.find('#txt-dis');
+            var description = parent.find('#txt-des');
+            var price_after = parent.find('#txt-Price-dis');
+            var id = parent.find('#txt-ID');
+            var od = parent.find('#txt-od');
+            var photo = parent.find('#txt-img');
+            var status = parent.find('#txt-select');
+            var frm = eThis.closest('form.upl');
+            var form_data = new FormData(frm[0]);
+
+            // Validation
+            if (name.val() === '') {
+                alert('Please enter a name');
+                name.focus();
+                return;
+            } else if (sub_id.val() === '0') {
+                alert('Please select a category');
+                sub_id.focus();
+                return;
+            }
+
+            // AJAX request
+            $.ajax({
+                type: "POST",
+                url: "Action/save_product.php",
+                data: form_data,
+                processData: false,
+                cache: false,
+                contentType: false,
+                dataType: "json",
+                beforeSend: function() {
+                    // Show loading indicator if needed
+                },
+                success: function(response) {
+                    getProduct()
+                    Countdata();
+                    if (response.dpl === true) {
+                        alert('Duplicate Name');
+                    } else {
+                        // Update the table with the new data
+                        var tr = '<tr>' +
+                            '<td>' + response.id + '</td>' +
+                            '<td><span>' + sub_id.val() + '</span>' + sub_name + '</td>' +
+                            '<td>' + name.val() + '</td>' +
+                            '<td>' + od.val() + '</td>' +
+                            '<td><img src="img/' + photo.val() + '" alt="Product Image"></td>' +
+                            '<td>' + status.val() + '</td>' +
+                            '<td>' + btnedit + btndelete + '</td>' +
+                            '</tr>';
+                        $('#tbldata').append(tr); // Assuming `tbldata` is the ID of your table body
+                    }
+                    Countdata();
+                    getProduct()
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error: " + status + error);
+                }
+            });
+        }
+
+        function edit_sub_category(eThis) {
+            var parent = eThis.parents('tr'); // Get the parent row of the button
+            var id = parent.find('td:eq(0)').text();
+            var cat = parent.find('td:eq(1) span').text()
+            // alert(cat)
+            var name = parent.find('td:eq(2)').text();
+            var od = parent.find('td:eq(3)').text();
+            var photo = parent.find('td:eq(4) img').attr('alt');
+            var status = parent.find('td:eq(5)').text();
+            // var img = body.find('#txt-img').val();
+            // alert(photo );
+
+            // Update the form fields with the extracted data
+            body.find('.frm #txt-edit').val(id);
+            body.find('.frm #txt-ID').val(id);
+            body.find('.frm #txt-cate').val(cat);
+            body.find('.frm #txt-Name').val(name);
+            body.find('.frm #txt-od').val(od);
+            body.find('.frm #txt-img').val(photo);
+            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+
+            body.find('.frm #txt-select').val(status);
+        }
+
+        function getProduct() {
+            var tr = '<tr>' +
+                '<th width="25px">ID</th>' +
+                '<th width="50px">Photo</th>' +
+                '<th width="100px">Product Name </th>' +
+                '<th width="50px">Price</th>' +
+                '<th width="50px">Discount</th>' +
+                '<th width="100px">Price After Discount</th>' +
+                '<th width="50px">Quantity</th>' +
+                '<th width="50px">Description</th>' +
+                '<th width="50px">Status</th>' +
+                '<th width="75px">Action</th>' +
+                '</tr>';
+
+            $.ajax({
+                type: "POST",
+                url: "Get/get_Product.php",
+                data: {
+                    opt: e.val(),
+                    s: s
+                },
+                cache: false,
+                dataType: "json",
+                beforeSend: function() {
+                    // You can add a loading spinner or any other pre-request logic here
+                },
+                success: function(response) {
+                    if (response.length > 0) {
+                        var row = '';
+                        for (i = 0; i < response.length; i++) {
+                            '<td>' + response[i].price + '$' + '</td>' +
+                                '<td>' + response[i].dis + '%' + '</td>'
+
+                            row += '<tr>' +
+                                '<td>' + response[i].Id + '</td>' +
+                                '<td><img src="img/' + response[i].photo + '" alt="' + response[i].photo + '"></td>' +
+                                // '<td>' + '<span>' + response[i].cate_id + '</span>' + response[i].cate_name + '</td>' +
+                                '<td>' + response[i].Name + '</td>' +
+                                '<td>' + response[i].price + '$' + '</td>' +
+                                '<td>' + response[i].dis + '%' + '</td>' +
+                                '<td>' + response[i].price_dis + '$' + '</td>' +
+                                '<td>' + response[i].od + '</td>' +
+                                '<td>' + response[i].des + '</td>' +
+                                '<td>' + response[i].status + '</td>' +
+                                '<td>' + btnedit + btndelete + '</td>' +
+                                '</tr>';
+                        }
+                        tbldata.html(tr + row);
+                        // alert("Data loaded successfully!");
+                    } else {
+                        // alert("No data found!");
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1261,6 +1420,7 @@ if (!isset($_SESSION['username'])) {
                 }
             });
         }
+
         function Editdata(eThis) {
             var parent = eThis.parents('tr'); // Get the parent row of the button
             var id = parent.find('td:eq(0)').text();
@@ -1377,6 +1537,7 @@ if (!isset($_SESSION['username'])) {
                 }
             });
         }
+
         function GetCategorieData() {
             var tr = '<tr>' +
                 '<th width="50px">ID</th>' +
@@ -1515,6 +1676,7 @@ if (!isset($_SESSION['username'])) {
 
             tbldata.html(tr);
         }
+
         function saveCustomer(eThis) {
             var frm = eThis.closest('form.upl');
             var form_data = new FormData(frm[0]);
@@ -1641,8 +1803,6 @@ if (!isset($_SESSION['username'])) {
                 }
             });
         });
-
-
     });
 </script>
 
