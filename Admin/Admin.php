@@ -605,7 +605,7 @@ if (!isset($_SESSION['username'])) {
         <div class="sub-menu">
             <ul>
                 <li data-opt="0">Slide</li>
-                <li data-opt="1">Gategory</li>
+                <li data-opt="1">Category</li>
                 <li data-opt="4">Sub cotegory</li>
                 <li data-opt="5">product</li>
             </ul>
@@ -1270,7 +1270,7 @@ if (!isset($_SESSION['username'])) {
                 '<th width="50px">Discount</th>' +
                 '<th width="100px">Price After Discount</th>' +
                 '<th width="50px">Quantity</th>' +
-                '<th width="50px">Description</th>' +
+                '<th width="100px">Description</th>' +
                 '<th width="50px">Status</th>' +
                 '<th width="75px">Action</th>' +
                 '</tr>';
