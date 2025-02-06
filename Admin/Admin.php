@@ -618,9 +618,9 @@ if (!isset($_SESSION['username'])) {
 
 
         <div class="bar-2">
-       
-       
-            
+
+
+
             <ul style="margin-top: 10px;">
                 <ul class="serch-box" style="float: left; margin-right: 320px;">
                     <li>
@@ -940,11 +940,11 @@ if (!isset($_SESSION['username'])) {
                         $('#txt-pass').hide();
                     } else if (frmInd === 4) {
                         edit_sub_category(eThis);
-                    }else if (frmInd === 5) {
-                        edit_product(eThis);
+                    } else if (frmInd === 5) {
+                        edit_Product(eThis);
                     }
                     // Pass the button reference to Editdata
-                } else if (statusTxt === "error") {
+                } else if(statusTxt === "error") {
                     alert("Error: " + xhr.status + ": " + xhr.statusText);
                 }
             });
@@ -1136,7 +1136,7 @@ if (!isset($_SESSION['username'])) {
         }
 
         function getsubcategory() {
-            
+            var tr = '<tr>' +
                 '<th width="50px">ID</th>' +
                 '<th width="75px">Category</th>' +
                 '<th>Brand Name</th>' +
@@ -1254,7 +1254,8 @@ if (!isset($_SESSION['username'])) {
         }
 
         function edit_Product(eThis) {
-            var parent = eThis.parents('tr'); // Get the parent row of the button
+            // alert(1)
+            var parent = eThis.parents('tr'); // Get the parent row
             var id = parent.find('td:eq(0)').text();
             var Photo = parent.find('td:eq(1) img').attr('alt');
             var productname = parent.find('td:eq(2)').text();
@@ -1264,18 +1265,21 @@ if (!isset($_SESSION['username'])) {
             var quantity = parent.find('td:eq(6)').text();
             var description = parent.find('td:eq(7)').text();
             var status = parent.find('td:eq(8)').text();
-            alert(id)
-            // var img = body.find('#txt-img').val();
-            // alert(photo );
+           
+            var img = body.find('#txt-img').val();
+            
 
             // // Update the form fields with the extracted data
-            // body.find('.frm #txt-edit').val(id);
-            // body.find('.frm #txt-ID').val(id);
-            // body.find('.frm #txt-cate').val(cat);
-            // body.find('.frm #txt-Name').val(name);
-            // body.find('.frm #txt-od').val(od);
-            // body.find('.frm #txt-img').val(photo);
-            // body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+            
+            // body.find('.frm #txt-slide').val();
+             body.find('.frm #txt-des').val(description);
+             body.find('.frm #txt-dis').val(discount);
+             body.find('.frm #txt-Price-dis').val(Price_After_Discount );
+             body.find('.frm #txt-price').val(price);
+             body.find('.frm #txt-Name').val(productname);
+             body.find('.frm #txt-od').val(quantity);
+             body.find('.frm #txt-img').val(Photo);
+             body.find('.frm .img-box').css('background-image', 'url(img/' + Photo + ')');
 
             // body.find('.frm #txt-select').val(status);
         }

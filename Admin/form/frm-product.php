@@ -17,7 +17,7 @@ if ($cnn->connect_error) {
         <div class="title">Add Product</div>
         <div class="btn-close"><i class="fas fa-times"></i></div>
     </div>
-    <form class="upl" enctype="multipart/form-data">
+    <form class="upl">
         <div class="body">
             <div style="width: 45%; float:left;">
                 <!-- <label>ID</label> -->
@@ -123,13 +123,16 @@ if ($cnn->connect_error) {
             let price = parseFloat($("#txt-price").val()) || 0;
             let discount = parseFloat($("#txt-dis").val()) || 0;
 
-            // Ensure price and discount are valid
             if (price >= 0 && discount >= 0) {
-                let discountedPrice = price - (price * (discount / 100));
-                $("#txt-Price-dis").val(discountedPrice.toFixed(2));
+                let discountedPrice = Math.ceil( price - (price * (discount / 100)));
+                $("#txt-Price-dis").val(discountedPrice.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             } else {
                 $("#txt-Price-dis").val(""); // Clear if invalid
             }
-        })
+        });
+
     });
 </script>
