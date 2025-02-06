@@ -14,7 +14,7 @@ if ($cnn->connect_error) {
 
 <div class="frm frm-product" style="width: 860px;">
     <div class="title-box">
-        <div class="title">Product</div>
+        <div class="title">Add Product</div>
         <div class="btn-close"><i class="fas fa-times"></i></div>
     </div>
     <form class="upl" enctype="multipart/form-data">
@@ -92,7 +92,7 @@ if ($cnn->connect_error) {
                 </div>
             </div>
             <div style="width: 53%; float: right; margin-left: 2%;">
-                <label>Name</label>
+                <label> Product Name</label>
                 <input type="text" name="txt-Name" id="txt-Name" class="frm-control">
                 <div style="width: 30%; float:left; margin-right: 5%;">
                     <label>Price</label>

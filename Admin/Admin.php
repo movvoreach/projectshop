@@ -616,8 +616,11 @@ if (!isset($_SESSION['username'])) {
     </div>
     <div class="cnt">
 
-        <div class="bar-2">
 
+        <div class="bar-2">
+       
+       
+            
             <ul style="margin-top: 10px;">
                 <ul class="serch-box" style="float: left; margin-right: 320px;">
                     <li>
@@ -665,6 +668,7 @@ if (!isset($_SESSION['username'])) {
         </div>
         <div class="data">
             <table id="tbl-data">
+                <h1 class="txt-title" style="margin-bottom: 20px;color:black;"></h1>
 
             </table>
         </div>
@@ -683,6 +687,7 @@ if (!isset($_SESSION['username'])) {
         var popup = '<div class="popup"></div>';
         var cnt = $('.cnt');
         var menu = $('.menu');
+        // var txt = $('.txt-title');
         var frm = Array('frm.slide.php', 'frm.category.php', 'Addusers.php', 'frm-change-passwords.php', 'subcategory.php', 'frm-product.php'); // Ensure the forms exist on the server
         var frmInd;
         var optmenu = 0;
@@ -819,7 +824,11 @@ if (!isset($_SESSION['username'])) {
                 getusers();
             } else if (frmInd === 3) {
                 changepassword();
-            };
+            } else if (frmInd === 4) {
+                getsubcategory()
+            } else if (frmInd === 5) {
+                getProduct()
+            }
         });
 
         // Handle "Back" button click
@@ -837,6 +846,10 @@ if (!isset($_SESSION['username'])) {
                 getusers();
             } else if (frmInd === 3) {
                 changepassword();
+            } else if (frmInd === 4) {
+                getsubcategory()
+            } else if (frmInd === 5) {
+                getProduct()
             }
         });
         // Set frmInd when a menu item is clicked
@@ -845,6 +858,7 @@ if (!isset($_SESSION['username'])) {
             frmInd = eThis.data('opt');
             $('.bar-2').show()
             $('.bar-1').find('.title').text(eThis.text());
+            $('.cnt').find('.txt-title').text(eThis.text());
             $('.sub-menu').find('ul li').css({
                 "background-color": "#eee",
                 "color": "#000"
@@ -926,6 +940,8 @@ if (!isset($_SESSION['username'])) {
                         $('#txt-pass').hide();
                     } else if (frmInd === 4) {
                         edit_sub_category(eThis);
+                    }else if (frmInd === 5) {
+                        edit_product(eThis);
                     }
                     // Pass the button reference to Editdata
                 } else if (statusTxt === "error") {
@@ -1120,10 +1136,10 @@ if (!isset($_SESSION['username'])) {
         }
 
         function getsubcategory() {
-            var tr = '<tr>' +
+            
                 '<th width="50px">ID</th>' +
                 '<th width="75px">Category</th>' +
-                '<th>Brand</th>' +
+                '<th>Brand Name</th>' +
                 '<th width="50px">OD</th>' +
                 '<th width="50px">Photo</th>' +
                 '<th width="50px">Status</th>' +
@@ -1237,28 +1253,31 @@ if (!isset($_SESSION['username'])) {
             });
         }
 
-        function edit_sub_category(eThis) {
+        function edit_Product(eThis) {
             var parent = eThis.parents('tr'); // Get the parent row of the button
             var id = parent.find('td:eq(0)').text();
-            var cat = parent.find('td:eq(1) span').text()
-            // alert(cat)
-            var name = parent.find('td:eq(2)').text();
-            var od = parent.find('td:eq(3)').text();
-            var photo = parent.find('td:eq(4) img').attr('alt');
-            var status = parent.find('td:eq(5)').text();
+            var Photo = parent.find('td:eq(1) img').attr('alt');
+            var productname = parent.find('td:eq(2)').text();
+            var price = parent.find('td:eq(3)').text();
+            var discount = parent.find('td:eq(4)').text();
+            var Price_After_Discount = parent.find('td:eq(5)').text();
+            var quantity = parent.find('td:eq(6)').text();
+            var description = parent.find('td:eq(7)').text();
+            var status = parent.find('td:eq(8)').text();
+            alert(id)
             // var img = body.find('#txt-img').val();
             // alert(photo );
 
-            // Update the form fields with the extracted data
-            body.find('.frm #txt-edit').val(id);
-            body.find('.frm #txt-ID').val(id);
-            body.find('.frm #txt-cate').val(cat);
-            body.find('.frm #txt-Name').val(name);
-            body.find('.frm #txt-od').val(od);
-            body.find('.frm #txt-img').val(photo);
-            body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
+            // // Update the form fields with the extracted data
+            // body.find('.frm #txt-edit').val(id);
+            // body.find('.frm #txt-ID').val(id);
+            // body.find('.frm #txt-cate').val(cat);
+            // body.find('.frm #txt-Name').val(name);
+            // body.find('.frm #txt-od').val(od);
+            // body.find('.frm #txt-img').val(photo);
+            // body.find('.frm .img-box').css('background-image', 'url(img/' + photo + ')');
 
-            body.find('.frm #txt-select').val(status);
+            // body.find('.frm #txt-select').val(status);
         }
 
         function getProduct() {
