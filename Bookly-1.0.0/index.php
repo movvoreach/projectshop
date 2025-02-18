@@ -476,24 +476,7 @@ if ($cnn->connect_error) {
     </div>
     <div class="swiper main-swiper">
       <div class="swiper-wrapper d-flex align-items-center">
-        <div class="swiper-slide">
-          <div class="container">
-            <div class="row d-flex flex-column-reverse flex-md-row align-items-center">
-              <div class="col-md-5 offset-md-1 mt-5 mt-md-0 text-center text-md-start">
-                <div class="banner-content">
-                  <h2>The Fine Print Book Collection</h2>
-                  <p>Best Offer Save 30%. Grab it now!</p>
-                  <a href="index.html" class="btn mt-3">Shop Collection</a>
-                </div>
-              </div>
-              <div class="col-md-6 text-center">
-                <div class="image-holder">
-                  <img src="images/banner-image2.png" class="img-fluid" alt="banner">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+       
         <div class="swiper-slide">
           <div class="container">
             <div class="row d-flex flex-column-reverse flex-md-row align-items-center">
@@ -660,8 +643,6 @@ if ($cnn->connect_error) {
       <?php
         }
 
-        echo '  </div>
-          </div>';
       }
       ?>
 

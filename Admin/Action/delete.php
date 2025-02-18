@@ -5,30 +5,33 @@ $cnn = new mysqli("localhost", "root", "", "shop_project");
 if ($cnn->connect_error) {
     die(json_encode(['delete' => false, 'error' => $cnn->connect_error]));
 }
-$tbl = array("tbl_slide","tbl_category","users");
-$opt = $_POST['opt'];
 
-// Retrieve the ID from the POST request
-$id = $_POST['id'] ?? null; // Use lowercase 'id' to match JavaScript
+$tbl = array("tbl_slide","tbl_category","users","tbl_customer","tbl_subcategory","tbl_product");
+$opt = $_POST['opt'] ?? null;
 
-$res = [];
+// Validate the table index and ID
+if (isset($tbl[$opt]) && isset($_POST['id'])) {
+    $id = (int)$_POST['id']; // Ensure $id is an integer
+    $table = $tbl[$opt]; // Get the table name
 
-// Validate and execute the query
-if ($id) {
-    $sql = "DELETE FROM $tbl[$opt] WHERE Id = $id";
-    if ($cnn->query($sql) === TRUE) {
+    // Prepare the SQL statement to prevent SQL injection
+    $stmt = $cnn->prepare("DELETE FROM $table WHERE Id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
         $res['delete'] = true; // Deletion was successful
     } else {
-        $res['delete'] = false; // Deletion failed
-        $res['error'] = $cnn->error; // Include error for debugging
+        $res['delete'] = false;
+        $res['error'] = $stmt->error; // Include error for debugging
     }
+
+    $stmt->close(); // Close the statement
 } else {
     $res['delete'] = false;
-    $res['error'] = 'Invalid ID';
+    $res['error'] = 'Invalid ID or Table';
 }
 
-// Close the connection
-$cnn->close();
+$cnn->close(); // Close the connection
 
 // Return response as JSON
 echo json_encode($res);

@@ -123,16 +123,14 @@ if ($cnn->connect_error) {
             let price = parseFloat($("#txt-price").val()) || 0;
             let discount = parseFloat($("#txt-dis").val()) || 0;
 
+            // Ensure price and discount are valid
             if (price >= 0 && discount >= 0) {
-                let discountedPrice = Math.ceil( price - (price * (discount / 100)));
-                $("#txt-Price-dis").val(discountedPrice.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }));
+                let discountedPrice = price - (price * (discount / 100));
+                $("#txt-Price-dis").val(discountedPrice.toFixed(2));
             } else {
                 $("#txt-Price-dis").val(""); // Clear if invalid
             }
-        });
+        })
 
     });
 </script>
